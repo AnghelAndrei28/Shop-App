@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shopapp/widgets/app_drawer.dart';
 
 import '../providers/cart_provider.dart' show Cart; //first option
 import '../widgets/cart_item.dart' as ci;
+import '../providers/oders_provider.dart';
 
 class CartScreen extends StatelessWidget {
   static const routeName = '/cart';
@@ -14,6 +16,7 @@ class CartScreen extends StatelessWidget {
         appBar: AppBar(
           title: Text('Your Cart'),
         ),
+        drawer: AppDrawer(),
         body: Column(
           children: [
             Card(
@@ -30,7 +33,7 @@ class CartScreen extends StatelessWidget {
                     Spacer(),
                     Chip(
                       label: Text(
-                        '\$${cart.totalAmount}',
+                        '\$${cart.totalAmount.toStringAsFixed(2)}',
                         style: TextStyle(
                           color: Colors.white,
                         ),
@@ -43,7 +46,10 @@ class CartScreen extends StatelessWidget {
                           style:
                               TextStyle(color: Theme.of(context).primaryColor),
                         ),
-                        onPressed: () {})
+                        onPressed: () {
+                          Provider.of<OrdersProvider>(context, listen: false).addOrder(cart.items.values.toList(), cart.totalAmount);
+                          cart.clear();
+                        })
                   ],
                 ),
               ),
